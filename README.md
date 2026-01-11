@@ -1,26 +1,75 @@
-# 🖤🛣️ BlackRoad Ai Agent Framework
+# BlackRoad AI Agent Framework
 
-**Wave 7** | Part of the BlackRoad Product Empire - 400+ enterprise solutions
+Sovereign AI agent orchestration framework. Build, deploy, and manage autonomous AI agents at scale with full control over your infrastructure.
 
-## 🚀 Quick Start
+## Features
 
-```bash
-./blackroad-ai-agent-framework.sh
+- **Agent Lifecycle Management** - Create, start, stop, and monitor agents
+- **Multi-Model Support** - Works with Ollama, OpenAI, Anthropic, local models
+- **Memory System** - Persistent agent memory with [MEMORY] integration
+- **Task Orchestration** - Distribute work across agent swarms
+- **Agent Communication** - Inter-agent messaging and collaboration
+- **Sovereignty** - Run entirely on your own infrastructure
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────┐
+│                Agent Framework                   │
+├─────────────────────────────────────────────────┤
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐         │
+│  │ Agent 1 │  │ Agent 2 │  │ Agent N │  ...    │
+│  └────┬────┘  └────┬────┘  └────┬────┘         │
+│       │            │            │               │
+│  ┌────▼────────────▼────────────▼────┐         │
+│  │         Message Bus                │         │
+│  └────────────────┬──────────────────┘         │
+│                   │                             │
+│  ┌────────────────▼──────────────────┐         │
+│  │     Task Scheduler & Registry      │         │
+│  └────────────────┬──────────────────┘         │
+│                   │                             │
+│  ┌────────────────▼──────────────────┐         │
+│  │   [MEMORY] System Integration      │         │
+│  └───────────────────────────────────┘         │
+└─────────────────────────────────────────────────┘
 ```
 
-## 🎨 BlackRoad Design System
+## Quick Start
 
-- **Hot Pink**: #FF1D6C
-- **Amber**: #F5A623  
-- **Electric Blue**: #2979FF
-- **Violet**: #9C27B0
+```bash
+# Initialize the framework
+./blackroad-ai-agent-framework.sh init
 
-## 📚 Documentation
+# Create an agent
+./blackroad-ai-agent-framework.sh create my-agent
 
-Full docs: https://docs.blackroad.io
+# Start agent swarm
+./blackroad-ai-agent-framework.sh start-swarm
+```
 
-## 🖤 BlackRoad Empire
+## Integration
 
-Part of **400+ products** across **52 categories**. Built with ∞ vision.
+Works with BlackRoad OS ecosystem:
+- **[MEMORY]** - Agent memory persistence
+- **[CODEX]** - Code and knowledge base
+- **[COLLABORATION]** - Multi-agent coordination
+- **Task Marketplace** - Distributed task management
 
-**BlackRoad OS, Inc.** | Built with Claude | Wave 7
+## Design System
+
+Built with BlackRoad brand:
+- **Hot Pink:** #FF1D6C
+- **Amber:** #F5A623
+- **Electric Blue:** #2979FF
+- **Violet:** #9C27B0
+
+## Part of BlackRoad Empire
+
+400+ products across 52 categories. Built with infinite vision.
+
+## License
+
+Copyright (c) 2026 BlackRoad OS, Inc. All rights reserved.
+
+Proprietary software. For licensing inquiries: blackroad.systems@gmail.com
