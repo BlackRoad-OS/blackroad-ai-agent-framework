@@ -1,0 +1,57 @@
+{
+  "name": "blackroad-ai-agent-framework",
+  "version": "7.0.0",
+  "description": "Self-orchestrating AI agent framework with Cloudflare Workers - auto-healing, repo-syncing, cohesion-monitoring",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "deploy:staging": "wrangler deploy --env staging",
+    "deploy:prod": "wrangler deploy --env production",
+    "build": "tsc",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit",
+    "db:migrate": "wrangler d1 migrations apply blackroad-agents",
+    "db:migrate:local": "wrangler d1 migrations apply blackroad-agents --local",
+    "kv:setup": "npm run kv:create && npm run kv:bind",
+    "kv:create": "wrangler kv:namespace create AGENT_STATE && wrangler kv:namespace create JOB_QUEUE && wrangler kv:namespace create REPO_CACHE && wrangler kv:namespace create RESOLUTION_LOG",
+    "queue:setup": "wrangler queues create agent-tasks && wrangler queues create repo-sync && wrangler queues create self-resolution",
+    "r2:setup": "wrangler r2 bucket create blackroad-repo-snapshots && wrangler r2 bucket create blackroad-agent-artifacts",
+    "setup": "npm run kv:setup && npm run queue:setup && npm run r2:setup && npm run db:migrate",
+    "tail": "wrangler tail",
+    "agents:status": "curl -s https://blackroad-agent-framework.workers.dev/api/agents/status | jq",
+    "agents:health": "curl -s https://blackroad-agent-framework.workers.dev/api/health | jq"
+  },
+  "keywords": [
+    "blackroad",
+    "ai-agents",
+    "cloudflare-workers",
+    "durable-objects",
+    "self-healing",
+    "auto-resolution",
+    "repo-sync",
+    "orchestration"
+  ],
+  "author": "BlackRoad OS <blackroad.systems@gmail.com>",
+  "license": "SEE LICENSE IN LICENSE",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241127.0",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0",
+    "wrangler": "^3.100.0",
+    "eslint": "^9.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0"
+  },
+  "dependencies": {
+    "hono": "^4.6.0",
+    "zod": "^3.24.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

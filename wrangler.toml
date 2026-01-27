@@ -1,0 +1,180 @@
+# ⬛⬜🛣️ BlackRoad AI Agent Framework - Cloudflare Workers Configuration
+# Self-orchestrating agents with auto-resolution capabilities
+
+name = "blackroad-agent-framework"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Account configuration (set via environment or wrangler login)
+# account_id = ""
+
+# ============================================================================
+# DURABLE OBJECTS - Stateful Agent Infrastructure
+# ============================================================================
+[durable_objects]
+bindings = [
+  { name = "AGENT_ORCHESTRATOR", class_name = "AgentOrchestrator" },
+  { name = "JOB_SCHEDULER", class_name = "JobScheduler" },
+  { name = "REPO_SYNC_AGENT", class_name = "RepoSyncAgent" },
+  { name = "SELF_HEALER", class_name = "SelfHealer" },
+  { name = "COHESION_MONITOR", class_name = "CohesionMonitor" }
+]
+
+[[migrations]]
+tag = "v1"
+new_classes = ["AgentOrchestrator", "JobScheduler", "RepoSyncAgent", "SelfHealer", "CohesionMonitor"]
+
+# ============================================================================
+# KV NAMESPACES - Fast Key-Value Storage
+# ============================================================================
+[[kv_namespaces]]
+binding = "AGENT_STATE"
+id = "blackroad_agent_state"
+preview_id = "blackroad_agent_state_preview"
+
+[[kv_namespaces]]
+binding = "JOB_QUEUE"
+id = "blackroad_job_queue"
+preview_id = "blackroad_job_queue_preview"
+
+[[kv_namespaces]]
+binding = "REPO_CACHE"
+id = "blackroad_repo_cache"
+preview_id = "blackroad_repo_cache_preview"
+
+[[kv_namespaces]]
+binding = "RESOLUTION_LOG"
+id = "blackroad_resolution_log"
+preview_id = "blackroad_resolution_log_preview"
+
+# ============================================================================
+# D1 DATABASE - Structured Data Storage
+# ============================================================================
+[[d1_databases]]
+binding = "DB"
+database_name = "blackroad-agents"
+database_id = "blackroad-agents-db"
+
+# ============================================================================
+# QUEUES - Async Message Processing
+# ============================================================================
+[[queues.producers]]
+queue = "agent-tasks"
+binding = "TASK_QUEUE"
+
+[[queues.consumers]]
+queue = "agent-tasks"
+max_batch_size = 10
+max_batch_timeout = 30
+max_retries = 3
+dead_letter_queue = "agent-tasks-dlq"
+
+[[queues.producers]]
+queue = "repo-sync"
+binding = "SYNC_QUEUE"
+
+[[queues.consumers]]
+queue = "repo-sync"
+max_batch_size = 5
+max_batch_timeout = 60
+max_retries = 5
+
+[[queues.producers]]
+queue = "self-resolution"
+binding = "RESOLUTION_QUEUE"
+
+[[queues.consumers]]
+queue = "self-resolution"
+max_batch_size = 1
+max_batch_timeout = 10
+max_retries = 10
+dead_letter_queue = "resolution-dlq"
+
+# ============================================================================
+# CRON TRIGGERS - Scheduled Jobs
+# ============================================================================
+[triggers]
+crons = [
+  # Every 5 minutes: Health check all agents
+  "*/5 * * * *",
+  # Every 15 minutes: Sync repository changes
+  "*/15 * * * *",
+  # Every hour: Run cohesion analysis
+  "0 * * * *",
+  # Every 6 hours: Deep self-resolution scan
+  "0 */6 * * *",
+  # Daily at midnight: Full repo scrape and update
+  "0 0 * * *"
+]
+
+# ============================================================================
+# R2 BUCKETS - Large Object Storage
+# ============================================================================
+[[r2_buckets]]
+binding = "REPO_SNAPSHOTS"
+bucket_name = "blackroad-repo-snapshots"
+
+[[r2_buckets]]
+binding = "AGENT_ARTIFACTS"
+bucket_name = "blackroad-agent-artifacts"
+
+# ============================================================================
+# ENVIRONMENT VARIABLES
+# ============================================================================
+[vars]
+ENVIRONMENT = "production"
+LOG_LEVEL = "info"
+BLACKROAD_VERSION = "7.0.0"
+
+# GitHub repos to monitor and sync
+MONITORED_REPOS = """
+BlackRoad-OS/blackroad-prism-console
+BlackRoad-OS/blackroad-ai-agent-framework
+BlackRoad-OS/blackroad-core
+BlackRoad-OS/blackroad-memory
+"""
+
+# Auto-resolution configuration
+AUTO_RESOLUTION_ENABLED = "true"
+MAX_RESOLUTION_ATTEMPTS = "5"
+RESOLUTION_COOLDOWN_MS = "30000"
+
+# Cohesion thresholds
+COHESION_THRESHOLD = "0.85"
+DRIFT_ALERT_THRESHOLD = "0.15"
+
+# ============================================================================
+# SECRETS (set via `wrangler secret put`)
+# ============================================================================
+# GITHUB_TOKEN - GitHub API access
+# ANTHROPIC_API_KEY - Claude API for intelligent resolution
+# OPENAI_API_KEY - Fallback AI provider
+# WEBHOOK_SECRET - For GitHub webhook verification
+
+# ============================================================================
+# DEVELOPMENT ENVIRONMENT
+# ============================================================================
+[env.dev]
+name = "blackroad-agent-framework-dev"
+vars = { ENVIRONMENT = "development", LOG_LEVEL = "debug" }
+
+[env.staging]
+name = "blackroad-agent-framework-staging"
+vars = { ENVIRONMENT = "staging", LOG_LEVEL = "info" }
+
+# ============================================================================
+# BUILD CONFIGURATION
+# ============================================================================
+[build]
+command = "npm run build"
+watch_dir = "src"
+
+# ============================================================================
+# OBSERVABILITY
+# ============================================================================
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
